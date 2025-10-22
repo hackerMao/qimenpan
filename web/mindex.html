@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时家阴盘转盘</title>
+    <style>
+        /* 在原有的样式基础上添加以下样式 */
+
+        /* 新增蓝紫色样式 */
+        .jixing-rumu-color {
+            color: #9370db; /* 蓝紫色 - 击刑+入墓 */
+            font-weight: bold;
+        }
+
+        /* 在颜色图例中添加蓝紫色样式 */
+        .jixing-rumu {
+            background-color: #9370db; /* 蓝紫色 */
+        }
+
+        /* 其他原有样式保持不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "楷体", "宋体", serif;
+            background-color: #1a0f1f;
+            color: #e0c090;
+            padding: 10px;
+            line-height: 1.4;
+            font-size: 16px;
+            background-image:
+                    radial-gradient(circle at 20% 30%, rgba(120, 60, 20, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(80, 40, 120, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(30, 20, 40, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 20px rgba(120, 60, 20, 0.3);
+            border: 1px solid #5a3c1f;
+        }
+
+        /* 时间选择页面样式 */
+        .time-select-page {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .time-select-page h1 {
+            font-size: 22px;
+            color: #d4af37;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+
+        .time-select-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            color: #d4af37;
+        }
+
+        .form-group input {
+            background: rgba(40, 25, 60, 0.7);
+            border: 1px solid #7a5c3f;
+            border-radius: 5px;
+            padding: 10px 12px;
+            color: #e0c090;
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+
+        .datetime-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .datetime-input {
+            flex: 1;
+        }
+
+        .now-button {
+            background: #5a3c1f;
+            color: #e0c090;
+            border: 1px solid #7a5c3f;
+            border-radius: 5px;
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .now-button:hover {
+            background: #7a5c3f;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+        }
+
+        .start-button {
+            background: #5a3c1f;
+            color: #e0c090;
+            border: 1px solid #7a5c3f;
+            border-radius: 5px;
+            padding: 14px 30px;
+            font-family: inherit;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .start-button:hover {
+            background: #7a5c3f;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+            color: #d4af37;
+        }
+
+        /* 奇门盘页面样式 */
+        .qi-men-page {
+            display: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #5a3c1f;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            color: #d4af37;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+
+        .divination-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 10px;
+            background: rgba(40, 25, 60, 0.7);
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #7a5c3f;
+            margin-bottom: 10px;
+        }
+
+        .time-section {
+            grid-column: 1 / span 2;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .time-item {
+            font-size: 16px; /* 增大字体 */
+            background: rgba(60, 40, 80, 0.5);
+            padding: 8px 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .ganzhi-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center; /* 垂直居中 */
+            height: 100%; /* 新增：确保高度100% */
+        }
+
+        .ganzhi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 5px;
+            height: 100%; /* 新增：确保高度100% */
+        }
+
+        .ganzhi-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 14px;
+            height: 100%; /* 新增：确保高度100% */
+        }
+
+        .ganzhi-gan {
+            background: rgba(60, 40, 80, 0.5);
+            padding: 6px 0; /* 增加内边距使高度增加 */
+            border-radius: 4px;
+            width: 100%;
+            text-align: center;
+            flex: 1; /* 新增：等分高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ganzhi-zhi {
+            background: rgba(80, 50, 30, 0.5);
+            padding: 6px 0; /* 增加内边距使高度增加 */
+            border-radius: 4px;
+            width: 100%;
+            text-align: center;
+            flex: 1; /* 新增：等分高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ju-section {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            justify-content: center; /* 垂直居中 */
+            height: 100%; /* 新增：确保高度100% */
+        }
+
+        .ju-item {
+            font-size: 14px;
+            background: rgba(80, 50, 30, 0.5);
+            padding: 8px 10px; /* 增加内边距使高度增加 */
+            border-radius: 4px;
+            text-align: center;
+            flex: 1; /* 新增：等分高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            background: rgba(40, 25, 60, 0.7);
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #7a5c3f;
+        }
+
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .color-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .jixing {
+            background-color: #9cd9ab; /* 绿色 */
+        }
+
+        .menpo {
+            background-color: #ff6b6b; /* 红色 */
+        }
+
+        .rumu {
+            background-color: #6b9fff; /* 蓝色 */
+        }
+
+        .kongwang-legend {
+            background-color: transparent;
+            border: 1px solid #ff6b6b;
+        }
+
+        .nine-palaces {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .palace {
+            background: rgba(40, 25, 60, 0.7);
+            border: 1px solid #7a5c3f;
+            border-radius: 6px;
+            padding: 10px 6px;
+            position: relative;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .palace-top-line {
+            position: absolute;
+            top: 3px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9px;
+            color: #a88c5f;
+            margin-bottom: 5px;
+        }
+
+        .nei-wai-label {
+            position: absolute;
+            top: 3px;
+            left: 5px;
+            font-size: 9px;
+            color: #a88c5f;
+            z-index: 10;
+        }
+
+        .palace-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-top: 18px;
+        }
+
+        .content-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .content-item {
+            text-align: center;
+            flex: 1;
+            font-size: 14px;
+            position: relative;
+            min-height: 20px;
+        }
+
+        .kongwang {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 1px solid #ff6b6b;
+            border-radius: 50%;
+            font-size: 10px;
+            line-height: 12px;
+            text-align: center;
+        }
+
+        .center-qi {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px; /* 缩小奇字大小 */
+            color: #d4af37;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.9);
+            line-height: 1;
+            z-index: 1;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            background: #5a3c1f;
+            color: #e0c090;
+            border: 1px solid #7a5c3f;
+            border-radius: 5px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #7a5c3f;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+        }
+
+        .highlight {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+
+        .ai-prompt {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(40, 25, 60, 0.7);
+            border-radius: 5px;
+            font-size: 14px;
+            max-height: 0;
+            overflow: hidden;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .ai-prompt.show {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #5a3c1f;
+        }
+
+        .copy-btn {
+            margin-top: 8px;
+            padding: 6px;
+            font-size: 14px;
+            background: rgba(80, 50, 30, 0.7);
+        }
+
+        /* 旺衰状态样式 */
+        .status-text {
+            font-size: 7px;
+            color: #a88c5f;
+            position: absolute;
+            white-space: nowrap;
+        }
+
+        .gong-status {
+            top: 5px;
+            right: 5px;
+        }
+
+        .jiuxing-status {
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .bamen-status {
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .tianpangan-status {
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dipangan-status {
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .jitiangan-status {
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .jidigan-status {
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 颜色标记样式 */
+        .jixing-color {
+            color: #9cd9ab; /* 绿色 */
+            font-weight: bold;
+        }
+
+        .menpo-color {
+            color: #ff6b6b; /* 红色 */
+            font-weight: bold;
+        }
+
+        .rumu-color {
+            color: #6b9fff; /* 蓝色 */
+            font-weight: bold;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(90, 60, 31, 0.7);
+            color: #e0c090;
+            border: 1px solid #7a5c3f;
+            border-radius: 5px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 380px) {
+            .content-item {
+                font-size: 13px;
+            }
+
+            .palace {
+                min-height: 140px;
+                padding: 8px 4px;
+            }
+
+            .center-qi {
+                font-size: 35px; /* 响应式调整奇字大小 */
+            }
+
+            .divination-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+
+            .time-section {
+                grid-column: 1;
+            }
+
+            .datetime-container {
+                flex-direction: column;
+            }
+
+            .now-button {
+                width: 100%;
+            }
+
+            .color-legend {
+                gap: 8px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 时间选择页面 -->
+    <div class="time-select-page" id="timeSelectPage">
+        <h1>奇门遁甲盘</h1>
+        <p>请选择起局时间</p>
+        <form class="time-select-form" id="timeForm">
+            <div class="form-group">
+                <label for="datetime">日期时间</label>
+                <div class="datetime-container">
+                    <input type="datetime-local" id="datetime" class="datetime-input" required>
+                    <button type="button" class="now-button" id="nowButton">现在</button>
+                </div>
+            </div>
+            <button type="submit" class="start-button">起局</button>
+            <div class="loading" id="loading">正在获取数据，请稍候...</div>
+        </form>
+    </div>
+
+    <!-- 奇门盘页面 -->
+    <div class="qi-men-page" id="qiMenPage">
+        <button class="back-button" id="backButton">返回</button>
+        <div class="header">
+            <h1>时家阴盘转盘</h1>
+
+            <div class="divination-container" id="divinationContainer">
+                <!-- 通过JavaScript动态生成 -->
+            </div>
+
+            <div class="color-legend" id="colorLegend">
+                <!-- 颜色图例将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <div class="nine-palaces" id="ninePalaces">
+            <!-- 九宫格将通过JavaScript动态生成 -->
+        </div>
+
+        <div class="controls">
+            <button id="generatePrompt">生成AI提示词</button>
+        </div>
+
+        <div class="ai-prompt" id="promptContainer">
+            <!-- AI提示词将在这里显示 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // 页面元素
+    const timeSelectPage = document.getElementById('timeSelectPage');
+    const qiMenPage = document.getElementById('qiMenPage');
+    const timeForm = document.getElementById('timeForm');
+    const datetimeInput = document.getElementById('datetime');
+    const nowButton = document.getElementById('nowButton');
+    const backButton = document.getElementById('backButton');
+    const divinationContainer = document.getElementById('divinationContainer');
+    const colorLegend = document.getElementById('colorLegend');
+    const ninePalaces = document.getElementById('ninePalaces');
+    const generatePromptBtn = document.getElementById('generatePrompt');
+    const promptContainer = document.getElementById('promptContainer');
+    const loading = document.getElementById('loading');
+
+    // 存储当前奇门数据和提示词
+    let qiMenData = null;
+    let currentPromptText = null;
+    let isPromptShowing = false;
+
+    // 宫位ID与名称映射
+    const palaceIdToName = {
+        1: "坎",
+        2: "坤",
+        3: "震",
+        4: "巽",
+        5: "中",
+        6: "乾",
+        7: "兑",
+        8: "艮",
+        9: "离"
+    };
+
+    // 根据新的九宫布局：最上面：巽、离、坤，中间：震、中、兑，最下面：艮、坎、乾
+    // 重新定义宫位ID与九宫格位置映射
+    const palaceIdToPosition = {
+        4: 0, // 巽 - 左上
+        9: 1, // 离 - 上中
+        2: 2, // 坤 - 右上
+        3: 3, // 震 - 左中
+        5: 4, // 中 - 中央
+        7: 5, // 兑 - 右中
+        8: 6, // 艮 - 左下
+        1: 7, // 坎 - 下中
+        6: 8  // 乾 - 右下
+    };
+
+    // 宫位顶部小字配置
+    const palaceTopLines = {
+        7: "7249坎→<span class='highlight'>兑</span>→巽",
+        2: "285`10巽→<span class='highlight'>坤</span>→坎",
+        3: "3438离→<span class='highlight'>震</span>→艮",
+        4: "4538兑→<span class='highlight'>巽</span>→坤",
+        5: "", // 中宫没有顶部小字
+        9: "9327乾→<span class='highlight'>离</span>→震",
+        8: "875`10震→<span class='highlight'>艮</span>→乾",
+        6: "6149艮→<span class='highlight'>乾</span>→离",
+        1: "616坤→<span class='highlight'>坎</span>→兑"
+    };
+
+    // 初始化页面
+    function initPage() {
+        // 设置默认时间为当前时间
+        setCurrentTime();
+
+        // 添加事件监听器
+        nowButton.addEventListener('click', setCurrentTime);
+        timeForm.addEventListener('submit', handleFormSubmit);
+        backButton.addEventListener('click', handleBackButton);
+        generatePromptBtn.addEventListener('click', handleGeneratePrompt);
+    }
+
+    // 设置当前时间
+    function setCurrentTime() {
+        const now = new Date();
+        // 格式化为YYYY-MM-DDTHH:mm
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        datetimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    // 处理表单提交
+    function handleFormSubmit(e) {
+        e.preventDefault();
+
+        // 获取表单数据
+        const datetimeValue = datetimeInput.value;
+        if (!datetimeValue) {
+            alert('请选择时间');
+            return;
+        }
+
+        // 显示加载状态
+        loading.style.display = 'block';
+
+        // 构建API请求URL
+        const datetime = datetimeValue.replace('T', ' ') + ':00';
+        const apiUrl = `http://localhost:8888/qiMen/yinPan/v1?datetime=${encodeURIComponent(datetime)}`;
+
+        // 发送API请求
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络响应不正常');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 更新数据
+                qiMenData = data;
+
+                // 渲染页面
+                renderQiMenPage();
+
+                // 切换页面
+                timeSelectPage.style.display = 'none';
+                qiMenPage.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('获取数据失败:', error);
+                alert('获取数据失败，请检查网络连接或稍后重试');
+            })
+            .finally(() => {
+                // 隐藏加载状态
+                loading.style.display = 'none';
+            });
+    }
+
+    // 处理返回按钮
+    function handleBackButton() {
+        qiMenPage.style.display = 'none';
+        timeSelectPage.style.display = 'flex';
+    }
+
+    // 生成AI提示词文本
+    function generatePromptText() {
+        if (!qiMenData) return '';
+
+        return `请分析以下奇门遁甲盘信息：
+时间：${qiMenData.gregorianTime} (${qiMenData.lunarTime})
+干支：${qiMenData.ganzhiTime}
+局数：${qiMenData.juNumber}，旬首：${qiMenData.xunShou}，值符：${qiMenData.zhiFu}，值使：${qiMenData.zhiShi}
+宫位信息如下：\n
+${qiMenData.palaceInfo}
+
+请记住以上局式信息，后面我问你问题时你要根据这个奇门局式分析。务必做到有根据、有理论支持，分析的详细还要体会我问问题的心理潜在因素，照顾我的心理感受。请问：`;
+    }
+
+    // 处理生成AI提示词
+    function handleGeneratePrompt() {
+        if (!qiMenData) return;
+
+        if (isPromptShowing) {
+            // 收起提示词
+            promptContainer.classList.remove('show');
+            generatePromptBtn.textContent = '生成AI提示词';
+            isPromptShowing = false;
+        } else {
+            // 生成提示词
+            currentPromptText = generatePromptText();
+
+            // 显示提示词
+            promptContainer.innerHTML = currentPromptText +
+                '<button class="copy-btn" id="copyPrompt">一键复制</button>';
+
+            promptContainer.classList.add('show');
+            generatePromptBtn.textContent = '收起AI提示词';
+            isPromptShowing = true;
+
+            // 添加复制功能
+            document.getElementById('copyPrompt').addEventListener('click', function() {
+                copyToClipboard(currentPromptText);
+            });
+        }
+    }
+
+    // 复制文本到剪贴板
+    function copyToClipboard(text) {
+        // 创建临时textarea元素
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+
+        // 选中并复制
+        textArea.select();
+        textArea.setSelectionRange(0, 99999); // 对于移动设备
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                alert('提示词已复制到剪贴板！');
+            } else {
+                throw new Error('复制失败');
+            }
+        } catch (err) {
+            console.error('复制失败:', err);
+            // 尝试使用新的Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    alert('提示词已复制到剪贴板！');
+                }, function() {
+                    alert('复制失败，请手动复制文本。');
+                });
+            } else {
+                alert('复制失败，请手动复制文本。');
+            }
+        } finally {
+            // 清理
+            document.body.removeChild(textArea);
+        }
+    }
+
+    // 渲染奇门盘页面
+    function renderQiMenPage() {
+        if (!qiMenData) return;
+
+        // 渲染干支和局数信息
+        renderDivinationInfo();
+
+        // 渲染颜色图例
+        renderColorLegend();
+
+        // 渲染九宫格
+        renderNinePalaces();
+    }
+
+    // 渲染干支和局数信息
+    function renderDivinationInfo() {
+        if (!qiMenData) return;
+
+        // 清空容器
+        divinationContainer.innerHTML = '';
+
+        // 创建时间部分 - 合并公历和农历时间
+        const timeSection = document.createElement('div');
+        timeSection.className = 'time-section';
+
+        const timeItem = document.createElement('div');
+        timeItem.className = 'time-item';
+        timeItem.textContent = `${qiMenData.gregorianTime} (${qiMenData.lunarTime})`;
+        timeSection.appendChild(timeItem);
+
+        // 解析干支时间
+        const ganzhiParts = qiMenData.ganzhiTime.split(' ');
+        const yearGanzhi = ganzhiParts[0].replace('年', '');
+        const monthGanzhi = ganzhiParts[1].replace('月', '');
+        const dayGanzhi = ganzhiParts[2].replace('日', '');
+        const hourGanzhi = ganzhiParts[3].replace('时', '');
+
+        // 创建干支部分
+        const ganzhiSection = document.createElement('div');
+        ganzhiSection.className = 'ganzhi-section';
+
+        // 创建干支网格
+        const ganzhiGrid = document.createElement('div');
+        ganzhiGrid.className = 'ganzhi-grid';
+
+        // 创建四柱
+        [yearGanzhi, monthGanzhi, dayGanzhi, hourGanzhi].forEach(ganzhi => {
+            const ganzhiCell = document.createElement('div');
+            ganzhiCell.className = 'ganzhi-cell';
+
+            const gan = document.createElement('div');
+            gan.className = 'ganzhi-gan';
+            gan.textContent = ganzhi[0];
+
+            const zhi = document.createElement('div');
+            zhi.className = 'ganzhi-zhi';
+            zhi.textContent = ganzhi[1];
+
+            ganzhiCell.appendChild(gan);
+            ganzhiCell.appendChild(zhi);
+            ganzhiGrid.appendChild(ganzhiCell);
+        });
+
+        ganzhiSection.appendChild(ganzhiGrid);
+
+        // 创建局数和值符值使部分
+        const juSection = document.createElement('div');
+        juSection.className = 'ju-section';
+
+        const juItem1 = document.createElement('div');
+        juItem1.className = 'ju-item';
+        juItem1.textContent = `${qiMenData.juNumber} >> ${qiMenData.xunShou}`;
+        juSection.appendChild(juItem1);
+
+        const juItem2 = document.createElement('div');
+        juItem2.className = 'ju-item';
+        juItem2.textContent = `值符:${qiMenData.zhiFu} 值使:${qiMenData.zhiShi}`;
+        juSection.appendChild(juItem2);
+
+        // 添加到容器中，形成两行两列布局
+        divinationContainer.appendChild(timeSection);     // 第一行：时间信息（跨两列）
+        divinationContainer.appendChild(ganzhiSection);  // 第二行左边：四柱干支
+        divinationContainer.appendChild(juSection);      // 第二行右边：局数和值符值使
+    }
+
+    // 渲染颜色图例
+    function renderColorLegend() {
+        colorLegend.innerHTML = '';
+
+        const jixingItem = document.createElement('div');
+        jixingItem.className = 'color-item';
+        jixingItem.innerHTML = '<div class="color-box jixing"></div><span>击刑</span>';
+
+        const menpoItem = document.createElement('div');
+        menpoItem.className = 'color-item';
+        menpoItem.innerHTML = '<div class="color-box menpo"></div><span>门迫</span>';
+
+        const rumuItem = document.createElement('div');
+        rumuItem.className = 'color-item';
+        rumuItem.innerHTML = '<div class="color-box rumu"></div><span>入墓</span>';
+
+        // 新增蓝紫色图例
+        const jixingRumuItem = document.createElement('div');
+        jixingRumuItem.className = 'color-item';
+        jixingRumuItem.innerHTML = '<div class="color-box jixing-rumu"></div><span>击刑+入墓</span>';
+
+        const kongwangItem = document.createElement('div');
+        kongwangItem.className = 'color-item';
+        kongwangItem.innerHTML = '<span class="kongwang">○</span><span>空亡</span>';
+
+        colorLegend.appendChild(jixingItem);
+        colorLegend.appendChild(menpoItem);
+        colorLegend.appendChild(rumuItem);
+        colorLegend.appendChild(jixingRumuItem); // 添加蓝紫色图例
+        colorLegend.appendChild(kongwangItem);
+    }
+
+    // 渲染九宫格
+    function renderNinePalaces() {
+        if (!qiMenData || !qiMenData.palaces) return;
+
+        // 清空九宫格
+        ninePalaces.innerHTML = '';
+
+        // 创建宫位数组，按九宫格位置排序
+        const sortedPalaces = Array(9).fill(null);
+
+        qiMenData.palaces.forEach(palace => {
+            const position = palaceIdToPosition[palace.palaceId];
+            if (position !== undefined) {
+                sortedPalaces[position] = palace;
+            }
+        });
+
+        // 创建九宫格
+        sortedPalaces.forEach((palace, index) => {
+            const palaceDiv = document.createElement('div');
+            palaceDiv.className = 'palace';
+
+            // 添加顶部小字
+            if (palace && palaceTopLines[palace.palaceId]) {
+                const topLineDiv = document.createElement('div');
+                topLineDiv.className = 'palace-top-line';
+                topLineDiv.innerHTML = palaceTopLines[palace.palaceId];
+                palaceDiv.appendChild(topLineDiv);
+            }
+
+            // 添加内盘/外盘标识
+            if (palace && palace.isNeiPan !== undefined && palace.palaceId !== 5) {
+                const neiWaiLabel = document.createElement('div');
+                neiWaiLabel.className = 'nei-wai-label';
+                neiWaiLabel.textContent = palace.isNeiPan ? '内' : '外';
+                palaceDiv.appendChild(neiWaiLabel);
+            }
+
+            // 创建宫位内容
+            if (palace) {
+                const palaceContent = document.createElement('div');
+                palaceContent.className = 'palace-content';
+
+                // 第一行
+                const row1 = document.createElement('div');
+                row1.className = 'content-row';
+
+                // 引干 - 确保中5宫的引干也正常显示
+                const yinganItem = document.createElement('div');
+                yinganItem.className = 'content-item';
+                yinganItem.textContent = palace.yingan || '';
+                row1.appendChild(yinganItem);
+
+                // 八神
+                const bashenItem = document.createElement('div');
+                bashenItem.className = 'content-item';
+                bashenItem.textContent = palace.bashen || '';
+                row1.appendChild(bashenItem);
+
+                // 空亡和马星
+                const kongwangItem = document.createElement('div');
+                kongwangItem.className = 'content-item';
+                kongwangItem.innerHTML = `${palace.maxing ? '马' : ''}${palace.kongwang ? '<span class="kongwang">○</span>' : ''}`;
+                row1.appendChild(kongwangItem);
+
+                palaceContent.appendChild(row1);
+
+                // 第二行
+                const row2 = document.createElement('div');
+                row2.className = 'content-row';
+
+                // 寄天干
+                const jiTianGanItem = document.createElement('div');
+                jiTianGanItem.className = 'content-item';
+
+                // 寄天干颜色设置 - 判断击刑+入墓、击刑、入墓状态
+                if (palace.jiTianGanJixing && palace.jiTianGanRumu) {
+                    jiTianGanItem.classList.add('jixing-rumu-color');
+                } else if (palace.jiTianGanJixing) {
+                    jiTianGanItem.classList.add('jixing-color');
+                } else if (palace.jiTianGanRumu) {
+                    jiTianGanItem.classList.add('rumu-color');
+                }
+
+                jiTianGanItem.textContent = palace.jiTianGan || '';
+                row2.appendChild(jiTianGanItem);
+
+                // 九星
+                const jiuxingItem = document.createElement('div');
+                jiuxingItem.className = 'content-item';
+                jiuxingItem.textContent = palace.jiuxing || '';
+                row2.appendChild(jiuxingItem);
+
+                // 天盘干
+                const tianpanganItem = document.createElement('div');
+                tianpanganItem.className = 'content-item';
+
+                // 天盘干颜色设置 - 判断击刑+入墓、击刑、入墓状态
+                if (palace.tianpanganJixing && palace.tianpanganRumu) {
+                    tianpanganItem.classList.add('jixing-rumu-color');
+                } else if (palace.tianpanganJixing) {
+                    tianpanganItem.classList.add('jixing-color');
+                } else if (palace.tianpanganRumu) {
+                    tianpanganItem.classList.add('rumu-color');
+                }
+
+                tianpanganItem.textContent = palace.tianpangan || '';
+                row2.appendChild(tianpanganItem);
+
+                palaceContent.appendChild(row2);
+
+                // 第三行
+                const row3 = document.createElement('div');
+                row3.className = 'content-row';
+
+                // 寄干（寄地干）
+                const jiganItem = document.createElement('div');
+                jiganItem.className = 'content-item';
+
+                // 寄地干颜色设置 - 判断击刑+入墓、击刑、入墓状态
+                if (palace.jiganJixing && palace.jiganRumu) {
+                    jiganItem.classList.add('jixing-rumu-color');
+                } else if (palace.jiganJixing) {
+                    jiganItem.classList.add('jixing-color');
+                } else if (palace.jiganRumu) {
+                    jiganItem.classList.add('rumu-color');
+                }
+
+                jiganItem.textContent = palace.jigan || '';
+                row3.appendChild(jiganItem);
+
+                // 八门
+                const bamenItem = document.createElement('div');
+                bamenItem.className = 'content-item';
+
+                // 根据门迫状态设置颜色
+                if (palace.menpo) {
+                    bamenItem.classList.add('menpo-color');
+                }
+
+                bamenItem.textContent = palace.bamen || '';
+                row3.appendChild(bamenItem);
+
+                // 地盘干
+                const dipanganItem = document.createElement('div');
+                dipanganItem.className = 'content-item';
+
+                // 地盘干颜色设置 - 判断击刑+入墓、击刑、入墓状态
+                if (palace.dipanganJixing && palace.dipanganRumu) {
+                    dipanganItem.classList.add('jixing-rumu-color');
+                } else if (palace.dipanganJixing) {
+                    dipanganItem.classList.add('jixing-color');
+                } else if (palace.dipanganRumu) {
+                    dipanganItem.classList.add('rumu-color');
+                }
+
+                dipanganItem.textContent = palace.dipangan || '';
+                row3.appendChild(dipanganItem);
+
+                palaceContent.appendChild(row3);
+
+                palaceDiv.appendChild(palaceContent);
+
+                // 添加旺衰状态信息（中宫除外）
+                if (palace.palaceId !== 5) {
+                    // 宫位状态 - 右上角
+                    if (palace.gongStatus) {
+                        const gongStatus = document.createElement('div');
+                        gongStatus.className = 'status-text gong-status';
+                        gongStatus.textContent = palace.gongStatus;
+                        palaceDiv.appendChild(gongStatus);
+                    }
+
+                    // 九星状态 - 九星下方
+                    if (palace.jiuxingStatus || palace.jiuxingYueStatus) {
+                        const jiuxingStatus = document.createElement('div');
+                        jiuxingStatus.className = 'status-text jiuxing-status';
+                        jiuxingStatus.textContent = `${palace.jiuxingStatus || ''}${palace.jiuxingStatus && palace.jiuxingYueStatus ? '`' : ''}${palace.jiuxingYueStatus || ''}`;
+                        jiuxingItem.appendChild(jiuxingStatus);
+                    }
+
+                    // 八门状态 - 八门下方
+                    if (palace.bamenStatus || palace.bamenYueStatus) {
+                        const bamenStatus = document.createElement('div');
+                        bamenStatus.className = 'status-text bamen-status';
+                        bamenStatus.textContent = `${palace.bamenStatus || ''}${palace.bamenStatus && palace.bamenYueStatus ? '`' : ''}${palace.bamenYueStatus || ''}`;
+                        bamenItem.appendChild(bamenStatus);
+                    }
+
+                    // 天盘干状态 - 天盘干下方
+                    if (palace.tianPanGanStatus) {
+                        const tianpanganStatus = document.createElement('div');
+                        tianpanganStatus.className = 'status-text tianpangan-status';
+                        tianpanganStatus.textContent = palace.tianPanGanStatus;
+                        tianpanganItem.appendChild(tianpanganStatus);
+                    }
+
+                    // 地盘干状态 - 地盘干下方
+                    if (palace.diPanGanStatus) {
+                        const dipanganStatus = document.createElement('div');
+                        dipanganStatus.className = 'status-text dipangan-status';
+                        dipanganStatus.textContent = palace.diPanGanStatus;
+                        dipanganItem.appendChild(dipanganStatus);
+                    }
+
+                    // 寄天干状态 - 寄天干下方
+                    if (palace.JiTianGanStatus) {
+                        const jitianganStatus = document.createElement('div');
+                        jitianganStatus.className = 'status-text jitiangan-status';
+                        jitianganStatus.textContent = palace.JiTianGanStatus;
+                        jiTianGanItem.appendChild(jitianganStatus);
+                    }
+
+                    // 寄地干状态 - 寄地干下方
+                    if (palace.jiDiGanStatus) {
+                        const jidiganStatus = document.createElement('div');
+                        jidiganStatus.className = 'status-text jidigan-status';
+                        jidiganStatus.textContent = palace.jiDiGanStatus;
+                        jiganItem.appendChild(jidiganStatus);
+                    }
+                }
+
+                // 中宫特殊处理 - 添加"奇"字
+                if (palace.palaceId === 5) {
+                    const centerQi = document.createElement('div');
+                    centerQi.className = 'center-qi';
+                    centerQi.textContent = '奇';
+                    palaceDiv.appendChild(centerQi);
+                }
+            } else {
+                // 空宫位处理
+                const palaceContent = document.createElement('div');
+                palaceContent.className = 'palace-content';
+                palaceDiv.appendChild(palaceContent);
+            }
+
+            ninePalaces.appendChild(palaceDiv);
+        });
+    }
+
+    // 初始化页面
+    initPage();
+</script>
+</body>
+</html>
