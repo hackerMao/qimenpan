@@ -176,7 +176,6 @@ func initGongWeiS() []GongWei {
 }
 
 var GWS = initGongWeiS()
-var BaGong = []GongWei{GWS[0], GWS[7], GWS[2], GWS[3], GWS[8], GWS[1], GWS[6], GWS[5]}
 
 type QTime struct {
 	GongLi   time.Time
@@ -1212,14 +1211,4 @@ func getJuShu(shu int, yinYang bool) string {
 		return yinYangDun + js
 	}
 	return yinYangDun + "未知局"
-}
-
-// 辅助函数
-func contains(arr []int, target int) bool {
-	for _, item := range arr {
-		if item == target {
-			return true
-		}
-	}
-	return false
 }
