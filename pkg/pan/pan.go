@@ -21,7 +21,7 @@ import (
 	"time"
 )
 
-// 宫位类型
+// PalaceType 宫位类型
 type PalaceType int
 
 const (
@@ -36,7 +36,7 @@ const (
 	PalaceLi
 )
 
-// 宫位状态位
+// GongWeiStatus 宫位状态位
 type GongWeiStatus uint32
 
 const (
@@ -60,14 +60,14 @@ var sanHeMaMap = map[wuxing.WuXing]int{
 	wuxing.MU:   jiugong.XUN.Id,
 }
 
-// 击刑入墓规则
+// XingMuRule 击刑入墓规则
 type XingMuRule struct {
 	GongId   int
 	XingGans []int
 	MuGans   []int
 }
 
-// 缓存管理器
+// CacheManager 缓存管理器
 type CacheManager struct {
 	palaceCache     sync.Map
 	xunshouCache    sync.Map
@@ -141,7 +141,7 @@ type GongWei struct {
 	JiTianGanStatus  string
 }
 
-// 状态操作方法
+// SetStatus 状态操作方法
 func (g *GongWei) SetStatus(status GongWeiStatus) {
 	g.Status |= status
 }
@@ -193,13 +193,13 @@ func (q *QTime) Print() {
 	q.SiZhu.Print()
 }
 
-// 排盘策略接口
+// ArrangeStrategy 排盘策略接口
 type ArrangeStrategy interface {
 	Arrange(pan *Pan) error
 	Name() string
 }
 
-// 具体策略实现
+// DiPanGanStrategy 具体策略实现
 type DiPanGanStrategy struct{}
 
 func (s *DiPanGanStrategy) Arrange(p *Pan) error {
@@ -672,7 +672,7 @@ func (s *InnerOutStrategy) Name() string {
 	return "InnerOutStrategy"
 }
 
-// 策略管理器
+// ArrangeManager 策略管理器
 type ArrangeManager struct {
 	strategies []ArrangeStrategy
 }
@@ -763,7 +763,7 @@ func (p *Pan) applyXingMuRules(gw *GongWei) {
 	}
 }
 
-// 农历服务
+// CalendarService 农历服务
 type CalendarService struct {
 	client *http.Client
 }
@@ -1048,16 +1048,16 @@ func (p *Pan) setTianGanStatus(gw *GongWei) {
 func (p *Pan) arrangeInnerOut() {
 	if p.YinYangDun {
 		for _, gw := range p.GongWeiS {
-			gw.IsNeiPan = (gw.Id == 1 || gw.Id == 3 || gw.Id == 4 || gw.Id == 8)
+			gw.IsNeiPan = gw.Id == 1 || gw.Id == 3 || gw.Id == 4 || gw.Id == 8
 		}
 	} else {
 		for _, gw := range p.GongWeiS {
-			gw.IsNeiPan = (gw.Id == 9 || gw.Id == 2 || gw.Id == 7 || gw.Id == 6)
+			gw.IsNeiPan = gw.Id == 9 || gw.Id == 2 || gw.Id == 7 || gw.Id == 6
 		}
 	}
 }
 
-// 输出数据结构
+// GwInfo 输出数据结构
 type GwInfo struct {
 	PalaceId         int    `json:"palaceId"`
 	PalaceName       string `json:"palaceName"`
