@@ -162,7 +162,6 @@
             text-align: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #5a3c1f;
         }
 
         .header h1 {
@@ -236,7 +235,7 @@
         }
 
         .ganzhi-zhi {
-            background: rgba(80, 50, 30, 0.5);
+            background: rgba(60, 40, 80, 0.5);
             padding: 6px 0; /* 增加内边距使高度增加 */
             border-radius: 4px;
             width: 100%;
@@ -257,7 +256,7 @@
 
         .ju-item {
             font-size: 14px;
-            background: rgba(80, 50, 30, 0.5);
+            background: rgba(60, 40, 80, 0.5);
             padding: 8px 10px; /* 增加内边距使高度增加 */
             border-radius: 4px;
             text-align: center;
@@ -312,14 +311,15 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 10px;
             margin: 15px 0;
+            border-top: 1px solid #7a5c3f;
+            border-left: 1px solid #7a5c3f;
         }
 
         .palace {
             background: rgba(40, 25, 60, 0.7);
-            border: 1px solid #7a5c3f;
-            border-radius: 6px;
+            border-right: 1px solid #7a5c3f;
+            border-bottom: 1px solid #7a5c3f;
             padding: 10px 6px;
             position: relative;
             min-height: 150px;
@@ -388,7 +388,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 40px; /* 缩小奇字大小 */
+            font-size: 90px; /* 缩小奇字大小 */
             color: #d4af37;
             font-weight: bold;
             text-shadow: 0 0 15px rgba(212, 175, 55, 0.9);
@@ -453,14 +453,14 @@
 
         /* 旺衰状态样式 */
         .status-text {
-            font-size: 7px;
+            font-size: 9px;
             color: #a88c5f;
             position: absolute;
             white-space: nowrap;
         }
 
         .gong-status {
-            top: 5px;
+            top: 3px;
             right: 5px;
         }
 
@@ -665,15 +665,15 @@
 
     // 宫位顶部小字配置
     const palaceTopLines = {
-        7: "7249坎→<span class='highlight'>兑</span>→巽",
-        2: "285`10巽→<span class='highlight'>坤</span>→坎",
-        3: "3438离→<span class='highlight'>震</span>→艮",
-        4: "4538兑→<span class='highlight'>巽</span>→坤",
+        7: "7249 坎 → <span class='highlight'>兑</span> → 巽",
+        2: "285`10 巽 → <span class='highlight'>坤</span> → 坎",
+        3: "3438 离 → <span class='highlight'>震</span> → 艮",
+        4: "4538 兑 → <span class='highlight'>巽</span> → 坤",
         5: "", // 中宫没有顶部小字
-        9: "9327乾→<span class='highlight'>离</span>→震",
-        8: "875`10震→<span class='highlight'>艮</span>→乾",
-        6: "6149艮→<span class='highlight'>乾</span>→离",
-        1: "616坤→<span class='highlight'>坎</span>→兑"
+        9: "9327 乾 → <span class='highlight'>离</span> → 震",
+        8: "875`10 震 → <span class='highlight'>艮</span> → 乾",
+        6: "6149 艮 → <span class='highlight'>乾</span> → 离",
+        1: "1616 坤 → <span class='highlight'>坎</span> → 兑"
     };
 
     // 初始化页面
@@ -717,7 +717,7 @@
 
         // 构建API请求URL
         const datetime = datetimeValue.replace('T', ' ') + ':00';
-        const apiUrl = `http://localhost:8888/qiMen/yinPan/v1?datetime=${encodeURIComponent(datetime)}`;
+        const apiUrl = `http://localhost:8866/qiMen/yinPan/v1?datetime=${encodeURIComponent(datetime)}`;
 
         // 发送API请求
         fetch(apiUrl)

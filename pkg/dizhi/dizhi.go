@@ -10,6 +10,8 @@ type DiZhi struct {
 	Name          string        `json:"name"` // 名称
 	wuxing.WuXing               // 五行
 	ShiLinWuXing  wuxing.WuXing // 时令五行
+	YueJiang      string        `json:"yueJiang"`
+	JianXing      string        `json:"jianXing"`
 }
 
 var (
@@ -27,6 +29,8 @@ var (
 	HAI  = DiZhi{Id: 12, Name: "亥", WuXing: wuxing.SHUI, ShiLinWuXing: wuxing.SHUI}
 )
 var ALL = []DiZhi{ZI, CHOU, YIN, MAO, CHEN, SI, WU, WEI, SHEN, YOU, XU, HAI}
+var YUE_JIANG = []string{"登明", "河魁", "从魁", "传送", "小吉", "胜光", "太乙", "天罡", "太冲", "功曹", "大吉", "神后"}
+var Jianxing = []string{"建", "除", "满", "平", "定", "执", "破", "危", "成", "收", "开", "闭"}
 
 var data = map[string]DiZhi{
 	"子": ZI,
@@ -42,6 +46,20 @@ var data = map[string]DiZhi{
 	"戌": XU,
 	"亥": HAI,
 }
+var yuejiang = map[int]string{
+	ZI.Id:   "神后",
+	CHOU.Id: "大吉",
+	YIN.Id:  "功曹",
+	MAO.Id:  "太冲",
+	CHEN.Id: "天罡",
+	SI.Id:   "太乙",
+	WU.Id:   "胜光",
+	WEI.Id:  "小吉",
+	SHEN.Id: "传送",
+	YOU.Id:  "从魁",
+	XU.Id:   "河魁",
+	HAI.Id:  "登明",
+}
 
 func Match(z string) DiZhi {
 	data, ok := data[z]
@@ -51,6 +69,9 @@ func Match(z string) DiZhi {
 	return data
 }
 
+func GetYueJiang(id int) string {
+	return yuejiang[id]
+}
 func Index(index int) DiZhi {
 	i := index - 1
 	if i < 0 {

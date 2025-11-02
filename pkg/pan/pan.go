@@ -672,6 +672,17 @@ func (s *InnerOutStrategy) Name() string {
 	return "InnerOutStrategy"
 }
 
+type YueJiangStrategy struct{}
+
+func (s *YueJiangStrategy) Arrange(p *Pan) error {
+	p.arrangeYueJiang()
+	return nil
+}
+
+func (s *YueJiangStrategy) Name() string {
+	return "YueJiangStrategy"
+}
+
 // ArrangeManager 策略管理器
 type ArrangeManager struct {
 	strategies []ArrangeStrategy
@@ -690,6 +701,7 @@ func NewArrangeManager() *ArrangeManager {
 			&SiHaiStrategy{},
 			&StatusStrategy{},
 			&InnerOutStrategy{},
+			&YueJiangStrategy{},
 		},
 	}
 }
@@ -1057,39 +1069,95 @@ func (p *Pan) arrangeInnerOut() {
 	}
 }
 
+func (p *Pan) arrangeYueJiang() {
+	yuejiangIndex := p.QTime.YinLi.Month() - 1
+	houZhiId := p.HourZhi.Id
+
+	index := 0
+	for i, v := range dizhi.ALL {
+		if v.Id == houZhiId {
+			index = i
+			break
+		}
+	}
+	diZhis := append(dizhi.ALL[index:], dizhi.ALL[:index]...)
+
+	yuejiangArr := make([]string, len(dizhi.YUE_JIANG))
+	copy(yuejiangArr, dizhi.YUE_JIANG)
+
+	// 根据月将索引重新排列月将数组
+	yuejiangArr = append(yuejiangArr[yuejiangIndex+1:], yuejiangArr[:yuejiangIndex+1]...)
+
+	// 反转整个数组以获得正确的顺序
+	reverseStringArray(yuejiangArr)
+
+	yuejiangMap := make(map[int]string)
+	jianxingMap := make(map[int]string)
+	for i, v := range diZhis {
+		yuejiangMap[v.Id] = yuejiangArr[i]
+		jianxingMap[v.Id] = dizhi.Jianxing[i]
+	}
+
+	for i := range p.GongWeiS {
+		for j := range p.GongWeiS[i].DiZHiList {
+			p.GongWeiS[i].DiZHiList[j].YueJiang = yuejiangMap[p.GongWeiS[i].DiZHiList[j].Id]
+			p.GongWeiS[i].DiZHiList[j].JianXing = jianxingMap[p.GongWeiS[i].DiZHiList[j].Id]
+		}
+	}
+}
+
+func reverseStringArray(arr []string) {
+	if len(arr) == 0 {
+		return
+	}
+	left, right := 0, len(arr)-1
+	for left < right {
+		arr[left], arr[right] = arr[right], arr[left]
+		left++
+		right--
+	}
+}
+
 // GwInfo 输出数据结构
 type GwInfo struct {
-	PalaceId         int    `json:"palaceId"`
-	PalaceName       string `json:"palaceName"`
-	Yingan           string `json:"yingan"`
-	Bashen           string `json:"bashen"`
-	Jiuxing          string `json:"jiuxing"`
-	Tianpangan       string `json:"tianpangan"`
-	Dipangan         string `json:"dipangan"`
-	Jigan            string `json:"jigan"`
-	JiTiangan        string `json:"jiTianGan"`
-	Bamen            string `json:"bamen"`
-	Maxing           bool   `json:"maxing"`
-	Kongwang         bool   `json:"kongwang"`
-	Menpo            bool   `json:"menpo"`
-	DipanganJixing   bool   `json:"dipanganJixing"`
-	TianpanganJixing bool   `json:"tianpanganJixing"`
-	JiganJixing      bool   `json:"jiganJixing"`
-	JiTianGanJixing  bool   `json:"jiTianGanJixing"`
-	TianpanganRumu   bool   `json:"tianpanganRumu"`
-	DipanganRumu     bool   `json:"dipanganRumu"`
-	JiganRumu        bool   `json:"jiganRumu"`
-	JiTianGanRumu    bool   `json:"jiTianGanRumu"`
-	GongStatus       string `json:"gongStatus"`
-	IsNeiPan         bool   `json:"isNeiPan"`
-	JiuxingStatus    string `json:"jiuxingStatus"`
-	JiuxingYueStatus string `json:"jiuxingYueStatus"`
-	BamenStatus      string `json:"bamenStatus"`
-	BamenYueStatus   string `json:"bamenYueStatus"`
-	TianPanGanStatus string `json:"tianPanGanStatus"`
-	DiPanGanStatus   string `json:"diPanGanStatus"`
-	JiTianGanStatus  string `json:"JiTianGanStatus"`
-	JiDiGanStatus    string `json:"jiDiGanStatus"`
+	PalaceId         int         `json:"palaceId"`
+	PalaceName       string      `json:"palaceName"`
+	Yingan           string      `json:"yingan"`
+	Bashen           string      `json:"bashen"`
+	Jiuxing          string      `json:"jiuxing"`
+	Tianpangan       string      `json:"tianpangan"`
+	Dipangan         string      `json:"dipangan"`
+	Jigan            string      `json:"jigan"`
+	JiTiangan        string      `json:"jiTianGan"`
+	Bamen            string      `json:"bamen"`
+	Maxing           bool        `json:"maxing"`
+	Kongwang         bool        `json:"kongwang"`
+	Menpo            bool        `json:"menpo"`
+	DipanganJixing   bool        `json:"dipanganJixing"`
+	TianpanganJixing bool        `json:"tianpanganJixing"`
+	JiganJixing      bool        `json:"jiganJixing"`
+	JiTianGanJixing  bool        `json:"jiTianGanJixing"`
+	TianpanganRumu   bool        `json:"tianpanganRumu"`
+	DipanganRumu     bool        `json:"dipanganRumu"`
+	JiganRumu        bool        `json:"jiganRumu"`
+	JiTianGanRumu    bool        `json:"jiTianGanRumu"`
+	GongStatus       string      `json:"gongStatus"`
+	IsNeiPan         bool        `json:"isNeiPan"`
+	JiuxingStatus    string      `json:"jiuxingStatus"`
+	JiuxingYueStatus string      `json:"jiuxingYueStatus"`
+	BamenStatus      string      `json:"bamenStatus"`
+	BamenYueStatus   string      `json:"bamenYueStatus"`
+	TianPanGanStatus string      `json:"tianPanGanStatus"`
+	DiPanGanStatus   string      `json:"diPanGanStatus"`
+	JiTianGanStatus  string      `json:"JiTianGanStatus"`
+	JiDiGanStatus    string      `json:"jiDiGanStatus"`
+	DiZhiList        []DiZhiResp `json:"diZhiList"`
+}
+
+type DiZhiResp struct {
+	DiZhiName string `json:"diZhiName"`
+	JianXing  string `json:"jianXing"`
+	YueJiang  string `json:"yueJiang"`
 }
 
 type PanData struct {
@@ -1190,10 +1258,27 @@ func getGwInfo(s []*GongWei) []GwInfo {
 			IsNeiPan:         gw.IsNeiPan,
 			JiTianGanStatus:  gw.JiTianGanStatus,
 			JiDiGanStatus:    gw.JiDiGanStatus,
+			DiZhiList:        getDiZhiResp(gw.DiZHiList),
 		}
 		gws = append(gws, g)
 	}
 	return gws
+}
+
+func getDiZhiResp(dzs []dizhi.DiZhi) []DiZhiResp {
+	if len(dzs) == 0 {
+		return []DiZhiResp{}
+	}
+	dzsResp := make([]DiZhiResp, 0, len(dzs))
+	for i := range dzs {
+		dz := dzs[i]
+		dzsResp = append(dzsResp, DiZhiResp{
+			DiZhiName: dz.Name,
+			JianXing:  dz.JianXing,
+			YueJiang:  dz.YueJiang,
+		})
+	}
+	return dzsResp
 }
 
 func getJuShu(shu int, yinYang bool) string {
